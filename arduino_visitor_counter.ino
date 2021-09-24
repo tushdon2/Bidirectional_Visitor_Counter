@@ -57,6 +57,9 @@ void setup() {
   
   pinMode(BUZ, OUTPUT); // Pin for Buzzer
   
+  totVisitors = 0;
+  inNow = 0;
+  
   // Permanent text on LCD
   disp.setCursor(0, 0);
   disp.print("Tot Visits:");
@@ -72,40 +75,44 @@ void loop() {
   float dist1 = ultrSncDist(TR1, EC1), dist2 = ultrSncDist(TR2, EC2);
   
   //------------check if visitors ENTER-------------
-  if (dist1 <= 300) {
+  if (dist1 <= 250) {
     senseBy1 = 1; // if visitor passes sensor 1
+    Serial.print("dist1 ");
+    Serial.println(dist1);
   }
   while(senseBy1) {
     // keep checking if visitor passed sensor 2
     dist2 = ultrSncDist(TR2, EC2);
-    if (dist2 <= 300) senseBy2 = 1;
+    if (dist2 <= 250) senseBy2 = 1;
     if (senseBy2) {
       totVisitors++; 
       inNow++;
       valPrint();
-      delay(1000); 
-      digitalWrite(BUZ, HIGH); // Buzzer on for 0.5 sec
-      delay(500); // total 1.5 sec given to pass sensor 2
+      delay(750); 
+      digitalWrite(BUZ, HIGH); // Buzzer on for 0.75 sec
+      delay(750);; // total 1.5 sec given to pass sensor 2
       return;
     }
   }
   //------------------------------------------------
   
   //-------------check if visitors EXIT-------------
-  if (dist2 <= 300) {
+  if (dist2 <= 250) {
     senseBy2 = 1; // if visitor passes sensor 2
+    Serial.print("dist2 ");
+    Serial.println(dist2);
   }
   while(senseBy2) {
     // keep checking if visitor passed sensor 1
     dist1 = ultrSncDist(TR1, EC1);
-    if (dist1 <= 300) senseBy1 = 1;
+    if (dist1 <= 250) senseBy1 = 1;
     if (senseBy1) {
       digitalWrite(BUZ, HIGH); // Buzzer on
       inNow--;
       valPrint();
-      delay(1000); 
-      digitalWrite(BUZ, HIGH); // Buzzer on for 0.5 sec
-      delay(500); // total 1.5 sec given to pass sensor 1
+      delay(750); 
+      digitalWrite(BUZ, HIGH); // Buzzer on for 0.75 sec
+      delay(750); // total 1.5 sec given to pass sensor 1
       return;
     }
   }
